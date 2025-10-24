@@ -5,9 +5,9 @@ run:
   AI_ENABLE: true
 
 zotero:
-  ZOTERO_USER: "17818823"
+  ZOTERO_USER: ""
   ZOTERO_GROUP: ""
-  ZOTERO_KEY: "XxuzaXmvtN8LbdZplzRf6YVf"
+  ZOTERO_KEY: ""
 
 email:
   SMTP_SERVER: ""
