@@ -1,0 +1,91 @@
+# GitHub Actions 工作流名称
+name: Daily Paper Recommendation
+
+# 工作流触发器
+on:
+  # 1. 定时触发：使用 cron 语法，在北京时间每天上午9点运行 (01:00 UTC)
+  #    您可以根据需要修改时间，例如 '0 22 * * *' 表示北京时间早上6点
+  schedule:
+    - cron: '0 1 * * *'
+
+  # 2. 手动触发：允许您在 GitHub Actions 页面手动点击 "Run workflow" 按钮来运行
+  workflow_dispatch:
+
+# 定义一个或多个作业（Job）
+jobs:
+  # 作业的唯一ID
+  generate-recommendations:
+    # 作业名称，显示在 GitHub UI 中
+    name: Generate Daily Recommendations
+    # 运行此作业所需的虚拟机环境
+    runs-on: ubuntu-latest
+
+    # 作业的步骤
+    steps:
+      # 步骤1: 检出（Checkout）代码
+      # 使用官方的 checkout action 来获取您仓库的最新代码
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 步骤2: 设置 Python 环境
+      # 使用官方的 setup-python action 来安装指定版本的 Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11' # 您可以指定项目所需的 Python 版本
+          cache: 'pip' # 缓存 pip 依赖，加快后续运行速度
+
+      # 步骤3: 安装项目依赖
+      # 运行 pip 命令来安装 requirements.txt 中列出的所有库
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 步骤4: 从 Secrets 创建配置文件
+      # 这是最关键的一步。我们从 GitHub Secrets 读取敏感信息，
+      # 并动态生成 Config.yaml 文件，避免将密钥硬编码在代码中。
+      - name: Create Config.yaml from Secrets
+        run: |
+          echo "
+          run:
+            TARGET_DATE: \"\"
+            TOP_K: 50
+            EMBEDDING_MODEL: \"models/gemini-embedding-001\"
+            AI_ENABLE: true
+
+          zotero:
+            ZOTERO_USER: \"${{ secrets.ZOTERO_USER }}\"
+            ZOTERO_KEY: \"${{ secrets.ZOTERO_KEY }}\"
+
+          ai:
+            GEMINI_KEY: \"${{ secrets.GEMINI_KEY }}\"
+            GEMINI_MODEL: \"models/gemini-2.5-Pro\"
+          " > Config.yaml
+        # 注意: 上面的 ${{ secrets.SECRET_NAME }} 语法是 Actions 获取密钥的标准方式
+
+      # 步骤5: 运行主程序
+      # 执行 Python 脚本来抓取论文并生成报告
+      - name: Run PaperLens main script
+        run: python main.py
+
+      # 步骤6: 提交生成的报告到仓库
+      # 将 outputs/ 目录下的新 Markdown 文件提交回您的 GitHub 仓库
+      - name: Commit and push daily report
+        run: |
+          # 配置 Git 用户信息
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          # 将新生成的报告文件添加到暂存区
+          git add outputs/*.md
+          
+          # 检查是否有文件被修改。如果没有新文件，则不执行提交。
+          if git diff --staged --quiet; then
+            echo "No new recommendations generated. Nothing to commit."
+          else
+            # 提交文件，并附上一个带有日期的清晰的 commit message
+            git commit -m "feat: ✨ Add daily paper recommendations for $(date +'%Y-%m-%d')"
+            # 将提交推送到远程仓库
+            git push
+          fi
