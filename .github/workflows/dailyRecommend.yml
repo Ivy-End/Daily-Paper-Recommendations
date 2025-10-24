@@ -59,7 +59,7 @@ jobs:
             ZOTERO_KEY: \"${{ secrets.ZOTERO_KEY }}\"
 
           ai:
-            GEMINI_KEY: \"${{ secrets.GEMINI_KEY }}\"
+            GEMINI_KEY: \"${{ secrets.GEMINI_API_KEY }}\"
             GEMINI_MODEL: \"models/gemini-2.5-Pro\"
           " > Config.yaml
         # 注意: 上面的 ${{ secrets.SECRET_NAME }} 语法是 Actions 获取密钥的标准方式
