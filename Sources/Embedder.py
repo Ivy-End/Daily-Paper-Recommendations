@@ -17,7 +17,7 @@ class Embedder:
         dimensions: int = 3072
     ):
         self.model      = modelName
-        self.apiKey     = os.getenv("GEMINI_API_KEY")
+        self.apiKey     = os.getenv("GEMINI_KEY")
         self.dimensions = dimensions
         
         self.aiClient = genai.Client(api_key = self.apiKey)
