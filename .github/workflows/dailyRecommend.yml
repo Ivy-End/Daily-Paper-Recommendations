@@ -19,6 +19,8 @@ jobs:
     name: Generate Daily Recommendations
     # 运行此作业所需的虚拟机环境
     runs-on: ubuntu-latest
+    env:
+      GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
 
     # 作业的步骤
     steps:
