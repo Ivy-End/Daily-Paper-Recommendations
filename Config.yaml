@@ -1,0 +1,21 @@
+run:
+  TARGET_DATE: ""                # 空=UTC 昨天；或指定 YYYY-MM-DD
+  TOP_K: 100
+  EMBEDDING_MODEL: models/gemini-embedding-001
+  AI_ENABLE: true
+
+zotero:
+  ZOTERO_USER: "17818823"
+  ZOTERO_GROUP: ""
+  ZOTERO_KEY: "XxuzaXmvtN8LbdZplzRf6YVf"
+
+email:
+  SMTP_SERVER: ""
+  SMTP_PORT: 587
+  SMTP_USER: ""
+  SMTP_PASS: ""
+  SMTP_FROM: ""
+  SMTP_TO: ""
+
+ai:
+  GEMINI_MODEL: models/gemini-2.5-pro

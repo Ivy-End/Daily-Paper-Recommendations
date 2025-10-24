@@ -1,0 +1,81 @@
+# Example unified source configuration for FetchPaper
+sources:
+  enabled:
+    OpenAlex: true
+    arXiv: true
+    PubMed: true
+    Crossref: true
+    bioRxiv: true
+    medRxiv: true
+    HAL: false
+    IEEE Xplore: false        # requires API key
+    OpenAIRE: true
+    Semantic Scholar: true    # optional API key for higher limits
+    DBLP: false
+    Europe PMC: true
+    OpenReview: true
+    NASA ADS: false           # requires API key
+    DataCite: true
+    CORE: false               # usually requires API key
+    DOAJ: true
+
+  defaults:
+    OpenAlex:
+      per_page: 200
+      max_pages: 6
+    arXiv:
+      per_page: 200
+      max_pages: 6
+    PubMed:
+      retmax: 200
+      max_pages: 10
+      term: ""
+    Crossref:
+      rows: 200
+      max_pages: 8
+    bioRxiv:
+      page_size: 100
+    medRxiv:
+      page_size: 100
+    OpenAIRE:
+      page_size: 100
+      max_pages: 10
+      query: ""
+    Semantic Scholar:
+      page_size: 100
+      max_pages: 8
+      query: ""
+      api_key: "${S2_API_KEY}"
+    Europe PMC:
+      page_size: 100
+      max_pages: 10
+      query: ""
+    OpenReview:
+      invitations: []
+      query: ""
+      page_size: 100
+      max_pages: 10
+      details: ""
+    IEEE Xplore:
+      api_key: "${IEEE_API_KEY}"
+      querytext: ""
+      page_size: 100
+      max_records: 200
+    NASA ADS:
+      api_key: "${ADS_API_TOKEN}"
+      query: ""
+      page_size: 100
+      max_pages: 8
+    DataCite:
+      query: ""
+      page_size: 100
+      max_pages: 10
+    CORE:
+      api_key: "${CORE_API_KEY}"
+      query: ""
+      page_size: 100
+      max_pages: 8
+    DOAJ:
+      query: ""
+      page_size: 100
+      max_pages: 10
