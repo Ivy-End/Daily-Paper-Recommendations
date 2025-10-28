@@ -1,4 +1,6 @@
+import os
 import logging
+import requests
 import numpy as np
 
 from .Embedder import Embedder
@@ -37,20 +39,20 @@ class Pipeline:
         # 1) Zotero 用户画像
         log.info(f'Fetching user profile from Zotero...')
         personasTexts = []
-        if self.config.ZOTERO_KEY and self.config.ZOTERO_USER:
-            import requests
-            headers = {"Zotero-API-Key": self.config.ZOTERO_KEY}
-            baseUrl = f"https://api.zotero.org/users/{self.config.ZOTERO_USER}/items?format=json&limit=9999&sort=dateModified&direction=desc"
-            
-            zoteroPapers = requests.get(baseUrl, headers = headers, timeout = 60).json()
-            totalPapers = 0
-            for paper in zoteroPapers:
-                if "data" in paper:
-                    dataField = paper["data"]
-                    if "title" in dataField and "abstractNote" in dataField:
-                        totalPapers += 1
-                        personasTexts.append((f"## 论文 {totalPapers}\n- 标题：" + dataField["title"] + "\n- 摘要：" + dataField["abstractNote"]).strip())
-                        print(f"- [INFO] Loaded paper from Zotero ({totalPapers}): ", dataField.get("title"))
+        zoteroUser = os.getenv("ZOTERO_USER")
+        zoteroKey  = os.getenv("ZOTERO_KEY")
+        headers = {"Zotero-API-Key": zoteroKey}
+        baseUrl = f"https://api.zotero.org/users/{zoteroUser}/items?format=json&limit=9999&sort=dateModified&direction=desc"
+        
+        zoteroPapers = requests.get(baseUrl, headers = headers, timeout = 60).json()
+        totalPapers = 0
+        for paper in zoteroPapers:
+            if "data" in paper:
+                dataField = paper["data"]
+                if "title" in dataField and "abstractNote" in dataField:
+                    totalPapers += 1
+                    personasTexts.append((f"## 论文 {totalPapers}\n- 标题：" + dataField["title"] + "\n- 摘要：" + dataField["abstractNote"]).strip())
+                    log.debug(f"- Loaded paper from Zotero ({totalPapers}): " + dataField["title"])
 
         # 2) 文本嵌入
         log.info(f'Embedding user profile texts...')

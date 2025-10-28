@@ -6,9 +6,6 @@ from google import genai
 from google.genai.types import EmbedContentConfig
 import logging
 
-# It's good practice to set up a logger to see informative messages
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 class Embedder:
     def __init__(
         self,

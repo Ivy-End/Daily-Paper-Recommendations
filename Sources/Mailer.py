@@ -1,26 +1,60 @@
 import os
-import ssl, smtplib
+import ssl, smtplib, base64
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 class Mailer:
-    def __init__(self, server:str, port:int):
+    def __init__(self, server: str, port: int):
         self.server = server
-        self.port = port
+        self.port = int(port)
+
         self.user = os.getenv("EMAIL_USER")
         self.password = os.getenv("EMAIL_PASS")
-        self.sender = os.getenv("EMAIL_FROM")
+        self.sender = os.getenv("EMAIL_FROM") or self.user
         self.to = os.getenv("EMAIL_TO")
 
-    def SendMarkdown(self, subject : str, markdownText : str):
+        # 1) 启动即校验必须的环境变量，少了就给出明确错误
+        missing = [k for k, v in {
+            "EMAIL_USER": self.user,
+            "EMAIL_PASS": self.password,
+            "EMAIL_TO": self.to
+        }.items() if not v]
+        if missing:
+            raise RuntimeError(f"Missing env vars: {', '.join(missing)}")
+
+    def _auth_plain(self, s: smtplib.SMTP):
+        """强制 AUTH PLAIN，避开非标准 LOGIN 提示"""
+        auth_bytes = f"\0{self.user}\0{self.password}".encode("utf-8")
+        auth_b64 = base64.b64encode(auth_bytes).decode("ascii")
+        code, resp = s.docmd("AUTH", "PLAIN " + auth_b64)
+        if code != 235:
+            raise smtplib.SMTPAuthenticationError(code, resp)
+
+    def SendMarkdown(self, subject: str, markdownText: str):
         msg = MIMEMultipart("alternative")
-        msg["Subject"]=subject; msg["From"]=self.sender; msg["To"]=self.to
+        msg["Subject"] = subject
+        msg["From"] = self.sender
+        msg["To"] = self.to
         msg.attach(MIMEText(markdownText, "plain", "utf-8"))
-        if self.port==465:
-            ctx=ssl.create_default_context()
-            with smtplib.SMTP_SSL(self.server, self.port, context=ctx) as s:
-                s.connect(self.server)
-                s.login(self.user, self.password); s.send_message(msg)
+
+        ctx = ssl.create_default_context()
+
+        if self.port == 465:
+            with smtplib.SMTP_SSL(self.server, self.port, context=ctx, timeout=30) as s:
+                s.ehlo()
+                try:
+                    s.login(self.user, self.password)
+                except AttributeError:
+                    # 部分服务器的 LOGIN 提示不标准：退而求其次走 AUTH PLAIN
+                    self._auth_plain(s)
+                s.send_message(msg)
         else:
-            with smtplib.SMTP(self.server, self.port) as s:
-                s.starttls(); s.login(self.user, self.password); s.send_message(msg)
+            with smtplib.SMTP(self.server, self.port, timeout=30) as s:
+                s.ehlo()
+                s.starttls(context=ctx)
+                s.ehlo()
+                try:
+                    s.login(self.user, self.password)
+                except AttributeError:
+                    self._auth_plain(s)
+                s.send_message(msg)

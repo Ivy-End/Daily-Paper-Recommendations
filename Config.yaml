@@ -1,6 +1,6 @@
 run:
   TARGET_DATE: ""                # 空=UTC 昨天；或指定 YYYY-MM-DD
-  TOP_K: 100
+  TOP_K: 32
   EMBEDDING_MODEL: models/gemini-embedding-001
   AI_ENABLE: true
 
@@ -11,7 +11,7 @@ zotero:
 
 email:
   EMAIL_SERVER: "smtp.exmail.qq.com"
-  EMAIL_PORT: 456
+  EMAIL_PORT: 465
 
 ai:
   GEMINI_MODEL: models/gemini-2.5-pro
