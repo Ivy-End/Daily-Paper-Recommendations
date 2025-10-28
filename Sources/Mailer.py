@@ -19,6 +19,7 @@ class Mailer:
         if self.port==465:
             ctx=ssl.create_default_context()
             with smtplib.SMTP_SSL(self.server, self.port, context=ctx) as s:
+                s.connect(self.server)
                 s.login(self.user, self.password); s.send_message(msg)
         else:
             with smtplib.SMTP(self.server, self.port) as s:
