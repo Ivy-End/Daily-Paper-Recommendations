@@ -23,7 +23,7 @@ class Pipeline:
         self.embedder = Embedder(config.EMBEDDING_MODEL)
         self.renderer = MarkdownRenderer()
         # self.ai = GeminiClient(config.GEMINI_KEY, config.GEMINI_MODEL) if (config.AI_ENABLE and config.GEMINI_KEY) else None
-        self.mailer = Mailer(config.SMTP_SERVER, config.SMTP_PORT)
+        self.mailer = Mailer(config.EMAIL_SERVER, config.EMAIL_PORT)
         
         self.aggregator = Aggregator([
             ArxivSource(),
