@@ -44,12 +44,8 @@ class Settings:
     ZOTERO_KEY  : str
 
     # email
-    SMTP_SERVER: str
-    SMTP_PORT: int
-    SMTP_USER: str
-    SMTP_PASS: str
-    SMTP_FROM: str
-    SMTP_TO: str
+    EMAIL_SERVER: str
+    EMAIL_PORT: int
 
     # ai
     GEMINI_KEY: str
@@ -73,13 +69,9 @@ def ParserConfig() -> Settings:
         ZOTERO_KEY   = ReadConfig(config, ["zotero","ZOTERO_KEY"  ],                                       "",  str),
 
         # ---- email ----
-        SMTP_SERVER  = ReadConfig(config, ["email","SMTP_SERVER"  ],                                       "",  str),
-        SMTP_PORT    = ReadConfig(config, ["email","SMTP_PORT"    ],                                      587,  int),
-        SMTP_USER    = ReadConfig(config, ["email","SMTP_USERname"],                                       "",  str),
-        SMTP_PASS    = ReadConfig(config, ["email","SMTP_PASSword"],                                       "",  str),
-        SMTP_FROM    = ReadConfig(config, ["email","SMTP_FROM"    ],                                       "",  str),
-        SMTP_TO      = ReadConfig(config, ["email","SMTP_TO"      ],                                       "",  str),
-
+        EMAIL_SERVER  = ReadConfig(config, ["email","EMAIL_SERVER"  ],                                       "",  str),
+        EMAIL_PORT    = ReadConfig(config, ["email","EMAIL_PORT"    ],                                      465,  int),
+        
         # ---- ai (Gemini) ----
         GEMINI_KEY   = ReadConfig(config, ["ai","GEMINI_KEY"      ],                                       "",  str),
         GEMINI_MODEL = ReadConfig(config, ["ai","GEMINI_MODEL"    ],                  "models/gemini-2.5-pro",  str),

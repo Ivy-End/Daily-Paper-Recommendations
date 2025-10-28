@@ -23,10 +23,11 @@ class Pipeline:
         self.embedder = Embedder(config.EMBEDDING_MODEL)
         self.renderer = MarkdownRenderer()
         # self.ai = GeminiClient(config.GEMINI_KEY, config.GEMINI_MODEL) if (config.AI_ENABLE and config.GEMINI_KEY) else None
-        # self.mailer = Mailer(config.SMTP_SERVER, config.SMTP_PORT, config.SMTP_USER, config.SMTP_PASS, config.SMTP_FROM, config.SMTP_TO)
+        self.mailer = Mailer(config.SMTP_SERVER, config.SMTP_PORT)
         
         self.aggregator = Aggregator([
-            ArxivSource()
+            ArxivSource(),
+            CrossrefSource(),
         ])
 
     def Run(self, *, day : str, nextDay : str):
@@ -97,5 +98,4 @@ class Pipeline:
         # 6) 渲染 + 邮件
         log.info(f'Rendering markdown and sending email...')
         markdown = self.renderer.Render(day, paperRecommendations)
-        # if self.mailer and self.config.SMTP_TO:
-        #     self.mailer.SendMarkdown(subject=f"[Daily Recommendations] {day}", markdownText = markdown)
+        self.mailer.SendMarkdown(subject=f"[PaperLens] {day}", markdownText = markdown)

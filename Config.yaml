@@ -10,12 +10,8 @@ zotero:
   ZOTERO_KEY: ""
 
 email:
-  SMTP_SERVER: ""
-  SMTP_PORT: 587
-  SMTP_USER: ""
-  SMTP_PASS: ""
-  SMTP_FROM: ""
-  SMTP_TO: ""
+  EMAIL_SERVER: "smtp.exmail.qq.com"
+  EMAIL_PORT: 456
 
 ai:
   GEMINI_MODEL: models/gemini-2.5-pro
