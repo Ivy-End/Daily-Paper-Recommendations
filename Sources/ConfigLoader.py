@@ -48,7 +48,6 @@ class Settings:
     EMAIL_PORT: int
 
     # ai
-    GEMINI_KEY: str
     GEMINI_MODEL: str
 
 def ParserConfig() -> Settings:
@@ -73,6 +72,5 @@ def ParserConfig() -> Settings:
         EMAIL_PORT    = ReadConfig(config, ["email","EMAIL_PORT"    ],                                      465,  int),
         
         # ---- ai (Gemini) ----
-        GEMINI_KEY   = ReadConfig(config, ["ai","GEMINI_KEY"      ],                                       "",  str),
-        GEMINI_MODEL = ReadConfig(config, ["ai","GEMINI_MODEL"    ],                  "models/gemini-2.5-pro",  str),
+        GEMINI_MODEL  = ReadConfig(config, ["ai","GEMINI_MODEL"    ],                  "models/gemini-2.5-pro",  str),
     )

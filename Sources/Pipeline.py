@@ -52,7 +52,7 @@ class Pipeline:
                 if "title" in dataField and "abstractNote" in dataField:
                     totalPapers += 1
                     personasTexts.append((f"## 论文 {totalPapers}\n- 标题：" + dataField["title"] + "\n- 摘要：" + dataField["abstractNote"]).strip())
-                    log.debug(f"- Loaded paper from Zotero ({totalPapers}): " + dataField["title"])
+                    log.info(f"- Loaded paper from Zotero ({totalPapers}): " + dataField["title"])
 
         # 2) 文本嵌入
         log.info(f'Embedding user profile texts...')

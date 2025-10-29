@@ -10,17 +10,8 @@ class Mailer:
 
         self.user = os.getenv("EMAIL_USER")
         self.password = os.getenv("EMAIL_PASS")
-        self.sender = os.getenv("EMAIL_FROM") or self.user
+        self.sender = os.getenv("EMAIL_FROM")
         self.to = os.getenv("EMAIL_TO")
-
-        # 1) 启动即校验必须的环境变量，少了就给出明确错误
-        missing = [k for k, v in {
-            "EMAIL_USER": self.user,
-            "EMAIL_PASS": self.password,
-            "EMAIL_TO": self.to
-        }.items() if not v]
-        if missing:
-            raise RuntimeError(f"Missing env vars: {', '.join(missing)}")
 
     def _auth_plain(self, s: smtplib.SMTP):
         """强制 AUTH PLAIN，避开非标准 LOGIN 提示"""
