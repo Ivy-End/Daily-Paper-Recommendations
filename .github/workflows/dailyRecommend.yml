@@ -65,6 +65,8 @@ jobs:
             GEMINI_MODEL: \"models/gemini-2.5-Pro\"
           
           email:
+            EMAIL_SERVER: \"smtp.exmail.qq.com\"
+            EMAIL_PORT: 465
             EMAIL_USER: \"${{ secrets.EMAIL_USER }}\"
             EMAIL_PASS: \"${{ secrets.EMAIL_PASS }}\"
             EMAIL_FROM: \"${{ secrets.EMAIL_FROM }}\"
